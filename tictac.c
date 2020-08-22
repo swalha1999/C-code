@@ -6,19 +6,26 @@ void printBoard(int board[]);
 char getWinner(int board[]);
 int isOver(int board[]);
 int getMove(int board[]);
+int minimax(int board[],int depth,int isMax);
 
 int comobo[8][3] = {
     {0,1,2},{3,4,5},{6,7,8},
     {0,3,6},{1,4,7},{2,5,8},
     {0,4,8},{2,4,6}
 };
+
+int human = 0;
+int ai = 0;
+int tie = 0;
+int f = 0;
+
 int main(void){
     
     
 	// Initialize an empty board 
 	int board[SIZE] = {0},move;
 	// As long as the game is not over:
-    printBoard(board);
+    //printBoard(board);
 	while (! isOver(board)){
 		//First the computer plays
 		move = getMove(board);
@@ -32,20 +39,25 @@ int main(void){
 		while ( move < 0 || move >= SIZE ){
 			printf("1 player, your move is:");
 			scanf("%d", &move);
+            fflush(stdin);
             if (board[move] != 0 ){
                 printf("illegal move\n");
                 move = -1 ; 
             }
 		}
 		board[move] = -1;
-        printBoard(board);
+        //printBoard(board);  //enable for two players
+
 	}
 	printf("And the winner is: %c \n",getWinner(board));
 
 
 		printBoard(board);
-        //system("puase");
-        return 0 ;
+        printf("enter the number 1 to exit .. : ");
+        scanf("%d",&f);
+        if(f){
+            return 0;
+        }
 }
 
 void printBoard(int board[]){
@@ -94,7 +106,7 @@ char getWinner(int board[]){
     
 }
 
-int isOver(int board[]){
+int isOver(int board[]){ // check if the game is over by checking if someone won or the bored is full
     char outp = getWinner(board);
     if( outp == 'X' || outp == 'O'){
         return 1 ;
@@ -116,15 +128,83 @@ int isOver(int board[]){
 }
 
 int getMove(int board[]){
-    int move = -1;
-    while ( move < 0 || move >= SIZE ){
+    /* 
+    int bestMove = -1;
+    while ( bestMove < 0 || bestMove >= SIZE ){
 			printf("0 player, your move is:");
-			scanf("%d", &move);
-            if (board[move] != 0 ){
+			scanf("%d", &bestMove);
+            if (board[bestMove] != 0 ){
                 printf("illegal move\n");
-                move = -1 ; 
+                bestMove = -1 ; 
             }
 		}
+    */
+    int bestMove = -1,score = -1,bestScore = -100;
+    for(int i = 0 ; i<SIZE;i++){
+        if(board[i] == 0){
+            board[i] = 1;
+            score = minimax(board,0,0);
+            board[i] = 0;
+            if(score>bestScore){
+                bestScore = score;
+                bestMove =  i;
+            }
+        }
+    }
+    printf("CPU :there is %d possibilities\nhuman win : %d\nCPU win : %d\ntie : %d \n\n",(ai+human+tie),human,ai,tie);
+    ai = 0;
+    human = 0;
+    tie = 0 ;
+    return bestMove;
+}
 
-    return move ;
+int minimax(int board[],int depth,int isMax){
+    char winner = getWinner(board);
+    int bestScore;
+    if(winner == 'X'){
+        ai+=1;
+        return 10 - depth;
+    }else if(winner == 'O'){
+        human+=1;
+        return -10 + depth;
+    }else if(winner == '=' && isOver(board))
+    {
+        tie+=1;
+        return 0;
+    }
+
+    if (isMax){
+        int score = -100;
+        bestScore = -100;
+        for(int i = 0 ; i<SIZE;i++){
+            if(board[i] == 0){
+                board[i] = 1;
+                //printBoard(board);
+                score = minimax(board,depth +1,!isMax);
+                board[i] = 0;
+                if(score>bestScore){
+                    bestScore = score;
+                }
+            }
+        }
+
+
+    }else{
+        int score = 100;
+        bestScore = 100;
+        for(int i = 0 ; i<SIZE;i++){
+            if(board[i] == 0){
+                board[i] = -1;
+                //printBoard(board);
+                score = minimax(board,depth+1,!isMax);
+                board[i] = 0;
+                if(score<bestScore){
+                    bestScore = score;
+                }
+            }
+        }
+    }
+    return bestScore;
+    
+    
 }
