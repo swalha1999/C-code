@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #define SIZE 9
 
 void printBoard(int board[]);
@@ -6,7 +7,11 @@ char getWinner(int board[]);
 int isOver(int board[]);
 int getMove(int board[]);
 
-
+int comobo[8][3] = {
+    {0,1,2},{3,4,5},{6,7,8},
+    {0,3,6},{1,4,7},{2,5,8},
+    {0,4,8},{2,4,6}
+};
 int main(void){
     
     
@@ -39,6 +44,7 @@ int main(void){
 
 
 		printBoard(board);
+        //system("puase");
         return 0 ;
 }
 
@@ -68,81 +74,23 @@ void printBoard(int board[]){
 }
 
 char getWinner(int board[]){
-    if( board[0]==board[1] && board[1]==board[2] && board[0] != 0 ){ // case 1 top row
-        if( board[0] == 1 ){
+    for (int i = 0; i < 8; i++)
+    {
+        if( board[comobo[i][0]]==board[comobo[i][1]] && board[comobo[i][1]]==board[comobo[i][2]] && board[comobo[i][0]] != 0 ){ 
+        if( board[comobo[i][0]] == 1 ){
             return ('X');
         }
         else
         {
             return('O');
         }
-        
-    }else if( board[3]==board[4] && board[4]==board[5] && board[3] != 0 ){ // case 2 middle row
-        if( board[3] == 1 ){
-            return ('X');
-        }
-        else
-        {
-            return('O');
-        }
-        
-    }else if( board[6]==board[7] && board[7]==board[8] && board[8] != 0 ){ // case 3 last row
-        if( board[8] == 1 ){
-            return ('X');
-        }
-        else
-        {
-            return('O');
-        }
-        
-    }else if( board[0]==board[3] && board[3]==board[6] && board[6] != 0 ){ // case 4 first coloum
-        if( board[6] == 1 ){
-            return ('X');
-        }
-        else
-        {
-            return('O');
-        }
-        
-    }else if( board[1]==board[4] && board[4]==board[7] && board[7] != 0 ){ // case 5 middle coloum
-        if( board[7] == 1 ){
-            return ('X');
-        }
-        else
-        {
-            return('O');
-        }
-        
-    }else if( board[2]==board[5] && board[5]==board[8] && board[8] != 0 ){ // case 6 last coloum
-        if( board[8] == 1 ){
-            return ('X');
-        }
-        else
-        {
-            return('O');
-        }
-        
-    }else  if( board[0]==board[4] && board[4]==board[8] && board[8] != 0 ){ // case 7 dignal 
-        if( board[0] == 1 ){
-            return ('X');
-        }
-        else
-        {
-            return('O');
-        }
-        
-    }else if( board[2]==board[4] && board[4]==board[6] && board[6] != 0 ){ //case 8 dignal 
-        if( board[6] == 1 ){
-            return ('X');
-        }
-        else
-        {
-            return('O');
-        }
-        
-    }else {
-        return ('=');
+    }    
     }
+    return ('=');
+    
+    
+    
+
     
 }
 
