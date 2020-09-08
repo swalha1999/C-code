@@ -17,7 +17,8 @@ int comobo[8][3] = {
 int human = 0;
 int ai = 0;
 int tie = 0;
-int f = 0;
+int exitcode = 0;
+int moves = 0 ;
 
 int main(void){
     
@@ -30,6 +31,7 @@ int main(void){
 		//First the computer plays
 		move = getMove(board);
 		board[move] = 1;
+        moves++;
 		//Check if the game is over
 		if (isOver(board))break;
 		printBoard(board);
@@ -46,6 +48,7 @@ int main(void){
             }
 		}
 		board[move] = -1;
+        moves++;
         //printBoard(board);  //enable for two players
 
 	}
@@ -54,8 +57,8 @@ int main(void){
 
 		printBoard(board);
         printf("enter the number 1 to exit .. : ");
-        scanf("%d",&f);
-        if(f){
+        scanf("%d",&exitcode);
+        if(exitcode){
             return 0;
         }
 }
@@ -127,7 +130,7 @@ int isOver(int board[]){ // check if the game is over by checking if someone won
     
 }
 
-int getMove(int board[]){
+int getMove(int board[]){ //that is minimax algoriams
     /* 
     int bestMove = -1;
     while ( bestMove < 0 || bestMove >= SIZE ){
@@ -155,22 +158,25 @@ int getMove(int board[]){
     ai = 0;
     human = 0;
     tie = 0 ;
+    printf("CPU :score this move is %d \n",bestScore);
     return bestMove;
 }
 
-int minimax(int board[],int depth,int isMax){
+int minimax(int board[],int depth,int isMax){ //
     char winner = getWinner(board);
     int bestScore;
     if(winner == 'X'){
         ai+=1;
-        return 10 - depth;
-    }else if(winner == 'O'){
+        return (15 - depth);
+    }
+    if(winner == 'O'){
         human+=1;
-        return -10 + depth;
-    }else if(winner == '=' && isOver(board))
-    {
+        return (-15 + depth);
+    }
+    if(winner == '=' && isOver(board)){
         tie+=1;
-        return 0;
+        if (moves > 2) return 0;
+        return -100 ;
     }
 
     if (isMax){
@@ -182,7 +188,7 @@ int minimax(int board[],int depth,int isMax){
                 //printBoard(board);
                 score = minimax(board,depth +1,!isMax);
                 board[i] = 0;
-                if(score>bestScore){
+                if(score > bestScore){
                     bestScore = score;
                 }
             }
@@ -198,7 +204,7 @@ int minimax(int board[],int depth,int isMax){
                 //printBoard(board);
                 score = minimax(board,depth+1,!isMax);
                 board[i] = 0;
-                if(score<bestScore){
+                if(score < bestScore){
                     bestScore = score;
                 }
             }
